@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.product.dto.ProductDTO;
-import com.product.exceptions.ProductNotFoundException;
 import com.product.service.ProductService;
+
+import exceptions.ProductNotFoundException;
 
 @RestController
 public class ProductController {

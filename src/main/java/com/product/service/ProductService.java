@@ -8,15 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.product.dto.ProductDTO;
+import com.product.entity.Category;
 import com.product.entity.Product;
-import com.product.exceptions.ProductNotFoundException;
+import com.product.repository.CategoryRepository;
 import com.product.repository.ProductRepository;
+
+import exceptions.CategoryNotFoundException;
+import exceptions.ProductNotFoundException;
 
 @Service
 public class ProductService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	public List<ProductDTO> getAll(){
 		List<Product> produtos = productRepository.findAll();
@@ -41,10 +48,14 @@ public class ProductService {
 		if	(product.isPresent())	{
 			return	ProductDTO.convert(product.get());
 		}
-		return null;
+		throw new ProductNotFoundException();
 	}
 	
 	public	ProductDTO	save(ProductDTO	productDTO) {
+		Boolean existsCategory = categoryRepository.existsById(productDTO.getCategory().getId());
+		if(!existsCategory) {
+			throw new CategoryNotFoundException();
+		}
 		Product	product	= productRepository.save(Product.convert(productDTO));
 		return	ProductDTO.convert(product);
 	}	
@@ -55,7 +66,7 @@ public class ProductService {
 			productRepository.delete(product.get());
 		}
 		
-		return null;
+		throw new ProductNotFoundException();
 	}
 
 }
